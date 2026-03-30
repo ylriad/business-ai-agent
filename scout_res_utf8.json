@@ -1,0 +1,65 @@
+﻿..\.venv\Scripts\python : 
+Traceback (most recent cal
+l last):
+строка:1 знак:1
++ ..\.venv\Scripts\python 
+-c "import urllib.request,
+ json; req = urllib ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (T  
+  raceback (most recent   
+  call last)::String)     
+[], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+  File "<string>", line 1,
+ in <module>
+    import urllib.request,
+ json; req = urllib.reques
+t.Request('http://localhos
+t:8000/scout', method='POS
+T', data=json.dumps({'busi
+ness_type': 'coffee shop',
+ 'city': 'Almaty', 'budget
+': 5000000, 'target_audien
+ce': 'young professionals'
+, 'top_n': 3}).encode(), h
+eaders={'Content-Type': 'a
+pplication/json'}); print(
+urllib.request.urlopen(req
+).read().decode())
+                          
+                          
+                          
+                          
+                          
+                          
+                          
+                          
+                          
+                          
+                          
+                    ~~~~~^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aliya\App
+Data\Local\Programs\Python
+\Python313\Lib\encodings\c
+p1251.py", line 19, in enc
+ode
+    return codecs.charmap_
+encode(input,self.errors,e
+ncoding_table)[0]
+           ~~~~~~~~~~~~~~~
+~~~~~~^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charm
+ap' codec can't encode cha
+racter '\xb2' in position 
+153: character maps to <un
+defined>
