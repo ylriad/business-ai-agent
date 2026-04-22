@@ -256,7 +256,7 @@
     .bar-track { height: 6px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
     .bar-fill  { height: 100%; border-radius: 3px; transition: width .9s cubic-bezier(.4,0,.2,1); width: 0; }
 
-    .loc-roi { padding: 1.2rem 1.4rem; display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+    .loc-roi { padding: 1.2rem 1.4rem; display: grid; grid-template-columns: 1fr; gap: .8rem; }
     .roi-item { background: var(--bg2); border-radius: 10px; padding: .7rem .9rem; }
     .roi-lbl { font-size: .7rem; color: var(--muted); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; margin-bottom: .25rem; }
     .roi-val { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; }
@@ -686,26 +686,9 @@ function buildCard(loc, rank) {
       <div class="score-label">Overall Score · ${loc.district} District</div>
     </div>
 
-    <div class="loc-bars">
-      ${barRow('🚶 Foot Traffic',     loc.traffic_score,    '#6c63ff')}
-      ${barRow('🏪 Competitor Gap',   loc.competitor_gap,   '#00d4aa')}
-      ${barRow('💰 Rent Affordability',loc.rent_affordable,  '#ffd700')}
-      ${barRow('👥 Demographics Fit', loc.demographics_fit, '#ff9f43')}
-    </div>
+    <!-- Details hidden as per request -->
 
     <div class="loc-roi">
-      <div class="roi-item">
-        <div class="roi-lbl">Monthly Revenue</div>
-        <div class="roi-val">${fmtKZT(loc.est_monthly_revenue)}</div>
-      </div>
-      <div class="roi-item">
-        <div class="roi-lbl">Monthly Profit</div>
-        <div class="roi-val ${loc.est_monthly_profit >= 0 ? 'roi-positive' : 'roi-negative'}">${fmtKZT(loc.est_monthly_profit)}</div>
-      </div>
-      <div class="roi-item">
-        <div class="roi-lbl">Annual ROI</div>
-        <div class="roi-val ${roiCls}">${roiStr}</div>
-      </div>
       <div class="roi-item">
         <div class="roi-lbl">Est. Monthly Rent</div>
         <div class="roi-val">${fmtKZT(loc.avg_rent_kzt)}</div>

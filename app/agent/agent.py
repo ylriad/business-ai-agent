@@ -66,8 +66,8 @@ async def _evaluate_candidate(
         }
         traffic_result, competitor_result = await asyncio.gather(traffic_task, comp_task)
     else:
-        from app.tools.rent_usa import get_rent_estimate
-        rent_task     = get_rent_estimate(lat, lng, business_type, budget, area_size)
+        from app.tools.rent import get_rent_estimate
+        rent_task     = get_rent_estimate(candidate.get("address", "Almaty"), business_type, budget, area_size)
         traffic_result, competitor_result, rent_result = await asyncio.gather(
             traffic_task, comp_task, rent_task
         )

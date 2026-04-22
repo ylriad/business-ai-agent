@@ -52,16 +52,16 @@ from datetime import datetime, timedelta
 _KRISHA_CACHE = {}
 _KRISHA_LOCK = asyncio.Lock()
 
-async def _krisha_rent(address: str, business_type: str) -> dict | None:
+async def _krisha_rent(address: str, business_type: str, area_size: int = 50) -> dict | None:
     district = _match_district(address) or "Unknown"
-    cache_key = ("almaty", business_type)
+    cache_key = ("almaty", business_type, area_size)
     
     async with _KRISHA_LOCK:
         now = datetime.now()
         if cache_key in _KRISHA_CACHE and now - _KRISHA_CACHE[cache_key]["time"] < timedelta(minutes=10):
             listings = _KRISHA_CACHE[cache_key]["listings"]
         else:
-            listings = await scrape_krisha_listings("almaty", business_type, limit=20)
+            listings = await scrape_krisha_listings("almaty", business_type, limit=20, area_size=area_size)
             _KRISHA_CACHE[cache_key] = {"time": now, "listings": listings}
     
     valid_prices = []
@@ -98,24 +98,55 @@ async def get_rent_estimate(
     address:       str,
     business_type: str   = "coffee_shop",
     monthly_budget: float = 5_000_000,
+    area_size: int = 50,
 ) -> dict:
     
     district = _match_district(address) or "Unknown"
     
     # 1. krisha.kz live real estate data ONLY
-    krisha_res = await _krisha_rent(address, business_type)
+    krisha_res = await _krisha_rent(address, business_type, area_size)
     
     if krisha_res:
         result = krisha_res
     else:
-        # If scraper catastrophically fails (e.g., no internet or blocking), mock Krisha data payload
-        result = {
-            "avg_rent_kzt": 1500000,
-            "min_rent_kzt": 800000,
-            "max_rent_kzt": 3000000,
-            "district": district,
-            "source": "Krisha.kz (Cached Fallback)"
-        }
+        # Fallback to actual local CSV database data if scraper fails
+        found_csv = False
+        try:
+            if RENT_CSV.exists():
+                with open(RENT_CSV, "r", encoding="utf-8") as f:
+                    # CSV format: city, district, business_type, avg_rent_usd, min_rent_usd, max_rent_usd
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        # Fallback business type matching
+                        bt_match = business_type.lower() in row["business_type"].lower() or row["business_type"].lower() in business_type.lower()
+                        if row["district"].lower() == district.lower() and bt_match:
+                            avg_usd = float(row["avg_rent_usd"])
+                            min_usd = float(row["min_rent_usd"])
+                            max_usd = float(row["max_rent_usd"])
+                            # KZT conversion roughly 500 KZT per USD, scale relative to 50 sqm baseline
+                            scale = area_size / 50.0
+                            result = {
+                                "avg_rent_kzt": int(avg_usd * 500 * scale),
+                                "min_rent_kzt": int(min_usd * 500 * scale),
+                                "max_rent_kzt": int(max_usd * 500 * scale),
+                                "district": district,
+                                "source": "Local Statistical Database"
+                            }
+                            found_csv = True
+                            break
+        except Exception as e:
+            logger.error(f"Error reading rent CSV: {e}")
+            
+        if not found_csv:
+            # Absolute fallback if CSV doesn't match or fails
+            scale = area_size / 50.0
+            result = {
+                "avg_rent_kzt": int(1500000 * scale),
+                "min_rent_kzt": int(800000 * scale),
+                "max_rent_kzt": int(3000000 * scale),
+                "district": district,
+                "source": "Generic Fallback Model"
+            }
 
     afford = _affordability_score(result["avg_rent_kzt"], monthly_budget)
     result["rent_affordable"] = afford

@@ -16,7 +16,7 @@ async def main():
             candidate=candidate,
             business_type="coffee shop",
             budget=5000000,
-            target_audience="young professionals"
+            area_size=50
         )
         import pprint
         pprint.pprint(res)
