@@ -10,7 +10,7 @@ The application operates entirely offline locally with cloud service coordinatio
 3. Install dependencies:
    ```bash
    pip install -r requirements.txt
-   pip install apify-client
+   pip install apify-client beautifulsoup4 pytest
    ```
 4. Define your keys in a `.env` file situated in the root directory:
    ```env
@@ -39,8 +39,11 @@ The application operates entirely offline locally with cloud service coordinatio
    - Slide your **Total Setup Budget (KZT)** natively representing your liquid capital.
    - Adjust the **Area Size** (m²). This acts as a hard filter parameter that bounds Krisha properties identically (e.g., `50 m²` precisely limits searches exclusively between `50m²` and `99m²` to block irrelevant Kiosks and Hangars).
 3. **Execution:** Press the designated `Scout Locations` toggle.
-4. **Data Aggregation Status:** Over the next ~15 to 45 seconds, independent processes will fetch OpenStreetMap coordinates, retrieve Foot-traffic Proxies from 2GIS, estimate Rent affordability matching your exact Area thresholds via Krisha.kz, and finally pass the final structure through an AI evaluation check.
+4. **Data Aggregation Status:** Over the next ~15 to 45 seconds, independent processes will fetch OpenStreetMap coordinates, retrieve Foot-traffic Proxies from 2GIS, estimate Rent affordability matching your exact Area thresholds via Krisha.kz (or local database fallback), and finally pass the final structure through an AI evaluation check.
 5. **Score Verification:** Once loaded, click directly on any of the "Scouted Locations" to inspect the `Overall Score` or interact with the immediate Google Maps / Krisha ad redirects displayed.
+6. **Save to Favorites:** You can seamlessly bookmark any high-performing location by clicking **"☆ Save to Favorites"** on the generated card. 
+   - This stores the location dynamically in your browser's `localStorage`, requiring no accounts or server databases.
+   - Click the **"⭐ Saved"** link in the top-right navigation bar to open the Favorites Modal and review your saved properties at any time.
 
 ## 🧑‍💼 4. How to Find & Extract Candidates (HeadHunter)
 1. Directly adjacent to the "Scouted Locations" header is the `Find Workers` tab. Click it!
